@@ -1,3 +1,18 @@
+// DOM Editor
+let runScoreComp = 0;
+let runScoreHuman = 0;
+
+const scoreboard = document.querySelector(".scoreboard");
+
+const scoreComputer = document.createElement("div")
+scoreComputer.classList.add("score-computer")
+scoreComputer.textContent = `Computer Score ${runScoreComp}`
+scoreboard.appendChild(scoreComputer)
+
+const scoreHuman = document.createElement("div")
+scoreHuman.classList.add("score-human")
+scoreHuman.textContent = `Human Score ${runScoreHuman}`
+scoreboard.appendChild(scoreHuman)
 
 function getComputerChoice(){
     let roll = Math.random();
@@ -5,68 +20,80 @@ function getComputerChoice(){
     return choice
 }
 
-function getHumanChoice(){
-    let choice = prompt("Paper, Scissors, or Rock?");
-    return choice
-}
-
-
 function playRound(humanChoice, computerChoice){
     // Human plays Rock
     if (humanChoice == "Rock"){
         if (computerChoice == "Paper"){
-            result = -1;
+            computerResult = 1;
+            humanResult = 0;
         }
         else if (computerChoice == "Scissors"){
-            result = 1;
+            computerResult = 0;
+            humanResult = 1;
         }
         else {
-            result = 0;
+            computerResult = 0;
+            humanResult = 0;
         }
     }
     // Human plays Paper
     else if (humanChoice == "Paper"){
         if (computerChoice == "Scissors"){
-            result = -1;
+            computerResult = 1;
+            humanResult = 0;
         }
         else if (computerChoice == "Rock"){
-            result = 1;
+            computerResult = 0;
+            humanResult = 1;
         }
         else {
-            result = 0;
+            computerResult = 0;
+            humanResult = 0;
         }
     }
     // Human players Scissor
     else {
         if (computerChoice == "Rock"){
-            result = -1;
+            computerResult = 1;
+            humanResult = 0;
         }
         else if (computerChoice == "Paper"){
-            result = 1;
+            computerResult = 0;
+            humanResult = 1;
         }
         else {
-            result = 0;
+            computerResult = 0;
+            humanResult = 0;
         } 
     }
     
-    // outputMessage = `You played ${humanChoice} and computer played ${computerChoice}. You get a score of ${result}`;
-
-    return result
+    outputMessage = `You played ${humanChoice} and computer played ${computerChoice}. You get a score of ${humanResult} and computer gets a score of ${computerResult}.`;
+    console.log(outputMessage)
+    return [computerResult, humanResult]
 }
 
+// Scoreboard
+function updateScoreboard() {
+  scoreComputer.textContent = `Computer Score ${runScoreComp}`;
+  scoreHuman.textContent = `Human Score ${runScoreHuman}`;
 
-function playGame(){
-    rounds = prompt("How many rounds?");
-    
-    score = 0;
-    
-    for (let i = 1; i <= rounds; i++){
-        let humanSelection = getHumanChoice();
-        let computerSelection = getComputerChoice();
-        score += playRound(humanSelection, computerSelection);
-    }
+  if (runScoreComp == 5) {
+    alert("Computer reached 5 points before you. Computer wins!")
+  }
+  else if (runScoreHuman == 5) {
+    alert("Nice, you reached 5 points before the computer. You win!")
+  }
 
-    return `Your total score is ${score}`
 }
 
-alert(playGame())
+// Each button press plays a round and increments the score
+const buttons = document.querySelectorAll("button");
+buttons.forEach((button) => {
+  button.addEventListener("click", function() {
+    const computerChoice = getComputerChoice();
+    const [compResult, humanResult] = playRound(button.id, computerChoice);
+    runScoreComp += compResult;
+    runScoreHuman += humanResult;
+    updateScoreboard();
+  });
+});
